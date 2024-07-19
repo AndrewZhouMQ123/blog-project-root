@@ -25,6 +25,10 @@ public class Controller {
     @Autowired
     FileRepository fileRepository;
 
+    @GetMapping public ResponseEntity<String> getApiRoot() {
+        return ResponseEntity.ok("Welcome to the API root!");
+    }
+
     @GetMapping("/vlogs")
     public ResponseEntity<List<Vlog>> getAllVlogsAndFiles() {
         try {
