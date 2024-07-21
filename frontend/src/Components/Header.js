@@ -6,7 +6,7 @@ const Header = (props) => {
     return (
     <div className="headbox clearfix">
         <div className="frame">
-            <a href="http://localhost:3000/"> 
+            <a href="http://18.189.30.220:8080/api"> 
                 <img src={behelit} alt="Behelit" className="logo"/>
             </a>
         </div>

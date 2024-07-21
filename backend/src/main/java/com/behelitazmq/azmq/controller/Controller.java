@@ -5,6 +5,8 @@ import com.behelitazmq.azmq.model.File;
 import com.behelitazmq.azmq.model.Vlog;
 import com.behelitazmq.azmq.repository.FileRepository;
 import com.behelitazmq.azmq.repository.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,8 @@ public class Controller {
     @Autowired
     FileRepository fileRepository;
 
+    Logger logger = LoggerFactory.getLogger(Controller.class);
+
     @GetMapping public ResponseEntity<String> getApiRoot() {
         return ResponseEntity.ok("Welcome to the API root!");
     }
@@ -35,12 +39,15 @@ public class Controller {
             List<Vlog> vlogs = new ArrayList<>();
             vlogs.addAll(vlogRepository.findAll());
             if (vlogs.isEmpty()) {
+                logger.info("no vlogs exist", vlogs);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
+            logger.info("vlogs loaded successfully", vlogs);
             return new ResponseEntity<>(vlogs, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e);
+            logger.error("failed to load vlogs because", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -104,6 +111,8 @@ public class Controller {
                 // Save the file entity
                 File newFile = fileRepository.save(toSaveFile);
 
+                logger.info("successfully saved file", newFile);
+
                 // save file to user-photos directory
 //                String uploadDir = "user-photos/" + newFile.getId();
 //                FileUploadUtil.saveFile(uploadDir, fileName, file);
@@ -113,8 +122,10 @@ public class Controller {
 
             // Save the vlog entity
             Vlog vlogged = vlogRepository.save(toBeSave);
+            logger.info("successfully saved vlog", vlogged);
             return new ResponseEntity<>(toBeSave, HttpStatus.CREATED);
         } catch (Exception e) {
+            logger.error("vlog failed to upload because", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

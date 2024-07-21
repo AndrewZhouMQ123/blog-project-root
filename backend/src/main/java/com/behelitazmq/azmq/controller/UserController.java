@@ -2,6 +2,8 @@ package com.behelitazmq.azmq.controller;
 
 import com.behelitazmq.azmq.model.User;
 import com.behelitazmq.azmq.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     UserRepository userRepository;
+
+    Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers(@RequestParam(required = false) String email) {
@@ -54,6 +58,7 @@ public class UserController {
                 tobeSave.setEmail(user.getEmail());
                 User newUser = userRepository.save(tobeSave);
                 newUser.setMessage("You registered successfully!");
+                logger.info("successfully saved user", newUser);
                 return new ResponseEntity<>(newUser, HttpStatus.OK);
             } else {
                 User duplicate = new User();
@@ -63,10 +68,12 @@ public class UserController {
                 duplicate.setUsername(user.getUsername());
                 duplicate.setPassword(user.getPassword());
                 duplicate.setEmail(user.getEmail());
+                logger.info("duplicate user", duplicate);
                 return new ResponseEntity<>(duplicate, HttpStatus.OK);
             }
 
         } catch (Exception e) {
+            logger.error("failed to save user because", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
