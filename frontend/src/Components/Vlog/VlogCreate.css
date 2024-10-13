@@ -1,0 +1,9 @@
+.char-count {
+    display: block; /* Make it a block element */
+    margin-top: 5px; /* Add some space above */
+    color: blue; /* Default color */
+  }
+  
+  .char-count.low {
+    color: red; /* Change color to red when low */
+  }

@@ -1,6 +1,7 @@
 package com.behelitazmq.azmq.model;
 
 import jakarta.persistence.*; // for Spring Boot 3
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "vlogs")
@@ -10,49 +11,36 @@ public class Vlog {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToOne(mappedBy = "vlog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private File file;
-
-    @Column(name="title")
+    // Max 100 characters
+    @Column(name = "title", nullable = false)
+    @Size(max = 100, message = "Title must not exceed 100 characters.")
     private String title;
 
-    @Column(name = "description")
+    // Max 500 words (Assuming ~5 characters per word on average)
+    @Column(name = "description", nullable = false)
+    @Size(max = 2500, message = "Description must not exceed 500 words.")
     private String description;
 
-    @Column(name = "message")
-    private String message;
+    // Video file path (assumed as String)
+    @Column(name = "video_url", nullable = false)
+    private String videoUrl;
 
-    @Column(name = "submitted")
-    private Boolean submitted;
-
-    @Column(name = "uploaded")
-    private Boolean uploaded;
+    // Thumbnail file path (assumed as String)
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
 
     public Vlog() {
-
     }
 
-    public Vlog(String title, String description, Boolean submitted)
-    {
+    public Vlog(String title, String description, String videoUrl, String thumbnailUrl) {
         this.title = title;
         this.description = description;
-        this.submitted = submitted;
+        this.videoUrl = videoUrl;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public long getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -63,29 +51,38 @@ public class Vlog {
         return description;
     }
 
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setDescription (String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public Boolean getSubmitted() {
-        return submitted;
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
-    public void setSubmitted(Boolean submitted) {
-        this.submitted = submitted;
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
-    public Boolean getUploaded() {
-        return uploaded;
+    @Override
+    public String toString() {
+        return "Vlog{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                '}';
     }
-
-    public void setUploaded(Boolean uploaded) {
-        this.uploaded = uploaded;
-    }
-
-
 }
